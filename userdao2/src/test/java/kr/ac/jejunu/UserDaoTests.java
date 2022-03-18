@@ -2,6 +2,8 @@ package kr.ac.jejunu;
 
 import org.junit.jupiter.api.Test;
 
+import java.sql.SQLException;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -18,9 +20,9 @@ import static org.hamcrest.Matchers.is;
  */
 public class UserDaoTests {
     @Test
-    public void findById() {
+    public void findById() throws SQLException, ClassNotFoundException {
         Integer id = 1;
-        String name = "Hulk";
+        String name = "hulk";
         String password = "1234";
 
         UserDao userDao = new UserDao();
