@@ -1,5 +1,6 @@
 package kr.ac.jejunu;
 
+import javax.sql.DataSource;
 import java.sql.*;
 
 /**
@@ -14,14 +15,14 @@ import java.sql.*;
  * 2022/03/18           sunkyu             최초 생성
  */
 public class UserDao {
-    private final ConnectionMaker connectionMaker;
+    private final DataSource dataSource;
 
-    public UserDao(ConnectionMaker connectionMaker) {
-        this.connectionMaker = connectionMaker;
+    public UserDao(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     public User findById(Integer id) throws ClassNotFoundException, SQLException {
-        Connection connection = connectionMaker.getConnection();
+        Connection connection = dataSource.getConnection();
 
         //sql 작성
         PreparedStatement preparedStatement = connection.prepareStatement(
@@ -51,7 +52,7 @@ public class UserDao {
 
     public void insert(User user) throws SQLException, ClassNotFoundException {
         //드라이버 로딩
-        Connection connection = connectionMaker.getConnection();
+        Connection connection = dataSource.getConnection();
 
         //sql 작성
         PreparedStatement preparedStatement = connection.prepareStatement(

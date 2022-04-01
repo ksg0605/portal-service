@@ -1,6 +1,9 @@
 package kr.ac.jejunu;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.sql.SQLException;
 
@@ -20,13 +23,19 @@ import static org.hamcrest.Matchers.is;
  * 2022/03/18           sunkyu             최초 생성
  */
 public class UserDaoTests {
+    private static UserDao userDao;
+
+    @BeforeAll
+    public static void setup() {
+        ApplicationContext applicationContext = new AnnotationConfigApplicationContext(DaoFactory.class);
+        userDao = applicationContext.getBean("userDao", UserDao.class);
+    }
+
     @Test
     public void findById() throws SQLException, ClassNotFoundException {
         Integer id = 1;
         String name = "hulk";
         String password = "1234";
-        DaoFactory daoFactory = new DaoFactory();
-        UserDao userDao = daoFactory.getUserDao();
         User user = userDao.findById(id);
         assertThat(user.getId(), is(id));
         assertThat(user.getName(), is(name));
@@ -41,8 +50,6 @@ public class UserDaoTests {
         User user = new User();
         user.setName(name);
         user.setPassword(password);
-        DaoFactory daoFactory = new DaoFactory();
-        UserDao userDao = daoFactory.getUserDao();
         userDao.insert(user);
 
         assertThat(user.getId(), greaterThan(0));
