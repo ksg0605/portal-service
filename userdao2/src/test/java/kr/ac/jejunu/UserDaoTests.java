@@ -59,4 +59,27 @@ public class UserDaoTests {
         assertThat(insertedUser.getPassword(), is(user.getPassword()));
 
     }
+
+    @Test
+    public void update() throws SQLException, ClassNotFoundException {
+        //사용자 추가
+        User user = new User();
+        user.setPassword("1234");
+        user.setName("hulk");
+        userDao.insert(user);
+        //수정
+        String updatedName = "허윤호";
+        String updatedPassword = "1111";
+
+        user.setName(updatedName);
+        user.setPassword(updatedPassword);
+
+        userDao.update(user);
+        User updatedUser = userDao.findById(user.getId());
+
+        assertThat(updatedUser.getName(), is(user.getName()));
+        assertThat(updatedUser.getPassword(), is(user.getPassword()));
+
+
+    }
 }
