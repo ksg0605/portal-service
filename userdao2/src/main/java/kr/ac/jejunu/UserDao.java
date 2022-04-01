@@ -25,7 +25,7 @@ public class UserDao {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        User user;
+        User user = null;
         try {
             connection = dataSource.getConnection();
 
@@ -37,13 +37,14 @@ public class UserDao {
 
             //sql 실행
             resultSet = preparedStatement.executeQuery();
-            resultSet.next();
+            if (resultSet.next()) {
 
-            //User 에 데이터 매핑
-            user = new User();
-            user.setId(resultSet.getInt("id"));
-            user.setName(resultSet.getString("name"));
-            user.setPassword(resultSet.getString("password"));
+                //User 에 데이터 매핑
+                user = new User();
+                user.setId(resultSet.getInt("id"));
+                user.setName(resultSet.getString("name"));
+                user.setPassword(resultSet.getString("password"));
+            }
         } finally {
             //자원 해지
             try {
@@ -144,5 +145,35 @@ public class UserDao {
             }
         }
 
+    }
+
+    public void delete(Integer id) throws SQLException {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        try {
+            //드라이버 로딩
+            connection = dataSource.getConnection();
+
+            //sql 작성
+            preparedStatement = connection.prepareStatement(
+                    "delete from userinfo where id = ?"
+            );
+            preparedStatement.setInt(1, id);
+
+            //sql 실행
+            preparedStatement.executeUpdate();
+
+        } finally {
+            try {
+                preparedStatement.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            try {
+                connection.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

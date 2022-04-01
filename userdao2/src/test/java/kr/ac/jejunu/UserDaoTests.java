@@ -8,8 +8,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 import java.sql.SQLException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.greaterThan;
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 
 /**
  * packageName            : kr.ac.jejunu
@@ -80,6 +79,21 @@ public class UserDaoTests {
         assertThat(updatedUser.getName(), is(user.getName()));
         assertThat(updatedUser.getPassword(), is(user.getPassword()));
 
+
+    }
+
+    @Test
+    public void delete() throws SQLException, ClassNotFoundException {
+        //사용자 추가
+        User user = new User();
+        user.setPassword("1234");
+        user.setName("hulk");
+        userDao.insert(user);
+        //삭제
+        userDao.delete(user.getId());
+
+        User deletedUser = userDao.findById(user.getId());
+        assertThat(deletedUser, nullValue());
 
     }
 }
