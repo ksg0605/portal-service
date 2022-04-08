@@ -16,10 +16,10 @@ import java.sql.Statement;
  * -----------------------------------------------------------
  * 2022/04/08           sunkyu             최초 생성
  */
-public class InsertStratementStrategy implements StatementStrategy {
+public class InsertStatementStrategy implements StatementStrategy {
     private final User user;
 
-    public InsertStratementStrategy(User user) {
+    public InsertStatementStrategy(User user) {
         this.user = user;
     }
 
