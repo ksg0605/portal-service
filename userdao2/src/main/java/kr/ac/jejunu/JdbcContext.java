@@ -1,27 +1,19 @@
 package kr.ac.jejunu;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
-/**
- * packageName            : kr.ac.jejunu
- * fileName              : UserDao
- * author                : sunkyu
- * date                  : 2022/03/18
- * description           :
- * ===========================================================
- * DATE              AUTHOR              NOTE
- * -----------------------------------------------------------
- * 2022/03/18           sunkyu             최초 생성
- */
-public class UserDao {
+public class JdbcContext {
     private final DataSource dataSource;
 
-    public UserDao(DataSource dataSource) {
+    public JdbcContext(DataSource dataSource) {
         this.dataSource = dataSource;
     }
 
-    public User findById(Integer id) throws ClassNotFoundException, SQLException {
+    User jdbcContextForFind(StatementStrategy statementStrategy) throws SQLException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
@@ -30,10 +22,7 @@ public class UserDao {
             connection = dataSource.getConnection();
 
             //sql 작성
-            preparedStatement = connection.prepareStatement(
-                    "select * from userinfo where id=?"
-            );
-            preparedStatement.setInt(1, id);
+            preparedStatement = statementStrategy.makeStatement(connection);
 
             //sql 실행
             resultSet = preparedStatement.executeQuery();
@@ -68,21 +57,16 @@ public class UserDao {
         return user;
     }
 
-
-    public void insert(User user) throws SQLException, ClassNotFoundException {
+    void jdbcContextForInsert(User user, StatementStrategy statementStrategy) throws SQLException {
+        ResultSet resultSet = null;
         Connection connection = null;
         PreparedStatement preparedStatement = null;
-        ResultSet resultSet = null;
         try {
             //드라이버 로딩
             connection = dataSource.getConnection();
 
             //sql 작성
-            preparedStatement = connection.prepareStatement(
-                    "insert into userinfo(name, password) values (?, ?)", Statement.RETURN_GENERATED_KEYS
-            );
-            preparedStatement.setString(1, user.getName());
-            preparedStatement.setString(2, user.getPassword());
+            preparedStatement = statementStrategy.makeStatement(connection);
 
             //sql 실행
             preparedStatement.executeUpdate();
@@ -108,54 +92,16 @@ public class UserDao {
                 e.printStackTrace();
             }
         }
-
-        //자원 해지
-
     }
 
-
-    public void update(User user) throws SQLException {
+    void jdbcContextForUpdate(StatementStrategy statementStrategy) throws SQLException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
             //드라이버 로딩
             connection = dataSource.getConnection();
 
-            //sql 작성
-            preparedStatement = connection.prepareStatement(
-                    "update userinfo set name = ?, password = ? where id = ?"
-            );
-            preparedStatement.setString(1, user.getName());
-            preparedStatement.setString(2, user.getPassword());
-            preparedStatement.setInt(3, user.getId());
-
-            //sql 실행
-            preparedStatement.executeUpdate();
-
-        } finally {
-            try {
-                preparedStatement.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            try {
-                connection.close();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
-
-    public void delete(Integer id) throws SQLException {
-        Connection connection = null;
-        try {
-            PreparedStatement preparedStatement = null;
-            //드라이버 로딩
-            connection = dataSource.getConnection();
-
-            StatementStrategy statementStrategy = new DeleteStatementStrategy();
-            preparedStatement = makeStatement(id, connection, "delete from userinfo where id = ?");
+            preparedStatement = statementStrategy.makeStatement(connection);
 
             //sql 실행
             preparedStatement.executeUpdate();
