@@ -1,13 +1,18 @@
 package kr.ac.jejunu;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+
 import java.sql.SQLException;
 
+@Component
+@RequiredArgsConstructor
 public class UserDao {
     private final JdbcContext jdbcContext;
 
-    public UserDao(JdbcContext jdbcContext) {
-        this.jdbcContext = jdbcContext;
-    }
+//    public UserDao(JdbcContext jdbcContext) {
+//        this.jdbcContext = jdbcContext;
+//    }
 
     public User findById(Integer id) throws SQLException {
         String sql = "select * from userinfo where id = ?";
