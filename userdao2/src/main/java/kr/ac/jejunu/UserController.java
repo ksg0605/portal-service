@@ -20,7 +20,9 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class UserController {
     @RequestMapping("/user2")
-    public ModelAndView user(@RequestParam("id") Integer id, @RequestParam("name") String name) {
+    public ModelAndView user(
+            @RequestParam("id") Integer id,
+            @RequestParam("name") String name) {
 
         User user = new User();
         user.setId(id);
